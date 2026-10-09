@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+    --container-filmforge: 1280px;
+
+    --font-display: "Syne", sans-serif;
+    --font-body: "Plus Jakarta Sans", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+
+    --color-filmforge-primary: #E5A93C;
+    --color-filmforge-secondary: #D97706;
+    --color-filmforge-error: #DC2626;
+    --color-filmforge-recording: #FFB4AB;
+
+
+    --color-filmforge-background: #0A0B0E;
+    --color-filmforge-background-secondary: #1A1D24;
+    --color-filmforge-background-tertiary: #15171C;
+    --color-filmforge-background-4: #0C0E12;
+
+
+    --color-filmforge-stroke: #373B47;
+
+
+    --color-filmforge-text: #F3F4F6;
+    --color-filmforge-text-secondary: #9FA4B2;
+    --color-filmforge-text-tertiary: #717684;
+
+
+    --breakpoint-filmforge-400: 400px; 
+}
