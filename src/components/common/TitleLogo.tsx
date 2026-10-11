@@ -1,10 +1,11 @@
 type TitleClassProps = {
-    size:"header"|"footer"
+    size:"landingHeader"|"footer"|"signupHeader"
 } 
 
 const titleClasses = {
-    header: "text-sm sm:text-[22px]",
-    footer: "text-sm"
+    landingHeader: "text-sm sm:text-[22px]",
+    footer: "text-sm",
+    signupHeader: "text-lg"
 }
 
 
@@ -16,7 +17,7 @@ const TitleLogo = (props:TitleClassProps) => {
                     font-display 
                     font-extrabold 
                     ${titleClasses[props.size]}
-                    text-filmforge-text 
+                    text-filmforge-text
                     tracking-[1.1px] 
                     leading-7
                 `}>

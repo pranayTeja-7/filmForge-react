@@ -1,6 +1,6 @@
-import Container from "./layout/Container"
+import Container from "../layout/Container"
 import { ArrowRight } from "lucide-react"
-import heroImage from "../assets/images/landing-hero-image.png"
+import heroImage from "../../assets/images/landing-hero-image.png"
 
 const LandingHero = () => {
     return (
@@ -9,19 +9,27 @@ const LandingHero = () => {
                 <div className="flex flex-col lg:flex-row lg:justify-between gap-5.5 filmforge-400:gap-9 lg:gap-6">
                     <div className="w-full lg:w-1/2 flex flex-col gap-5 ">
                 
-                        <p className="
-                            font-mono
-                            text-[10px]
-                            leading-5
-                            tracking-[1px]
-                            font-medium
-                            text-filmforge-primary
+                        <div className="
+                            flex 
+                            items-center
                             px-3
                             py-1
                             rounded-xl
                             bg-filmforge-background-secondary
                             w-fit
-                        ">INDIE & STUDENT FILMMAKERS • OPEN COLLABORATION</p>
+                            gap-1.75
+                        ">
+                            <div className="w-1.5 h-1.5 bg-filmforge-primary rounded-[50%]"></div>
+                            <div className="
+                                font-mono
+                                text-[10px]
+                                leading-5
+                                tracking-[1px]
+                                font-medium
+                                text-filmforge-primary
+                                
+                            ">INDIE & STUDENT FILMMAKERS • OPEN COLLABORATION</div>
+                        </div>
                         <h1 className="
                             text-[27px] filmforge-400:text-[32px] sm:text-[46px] 
                             leading-9 sm:leading-11.5 

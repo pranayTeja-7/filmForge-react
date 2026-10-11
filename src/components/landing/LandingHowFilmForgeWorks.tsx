@@ -1,5 +1,5 @@
 import LandingProcessStepCard from "./LandingProcessStepCard"
-import Container from "./layout/Container"
+import Container from "../layout/Container"
 
 const LandingHowFilmForgeWorks = () => {
 

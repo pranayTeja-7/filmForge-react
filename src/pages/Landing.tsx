@@ -1,8 +1,8 @@
-import LandingHeader from "../components/LandingHeader";
-import LandingHero from "../components/LandingHero";
-import LandingHowFilmForgeWorks from "../components/LandingHowFilmForgeWorks";
-import LandingCraftDisciplines from "../components/LandingCraftDisciplines";
-import LandingFooter from "../components/LandingFooter";
+import LandingHeader from "../components/landing/LandingHeader";
+import LandingHero from "../components/landing/LandingHero";
+import LandingHowFilmForgeWorks from "../components/landing/LandingHowFilmForgeWorks";
+import LandingCraftDisciplines from "../components/landing/LandingCraftDisciplines";
+import LandingFooter from "../components/landing/LandingFooter";
 
 const LandingPage = () => {
     return (
@@ -12,7 +12,7 @@ const LandingPage = () => {
                 <LandingHero />
                 <LandingHowFilmForgeWorks />
                 <LandingCraftDisciplines />
-                </main>
+            </main>
             <LandingFooter />
         </>
     )

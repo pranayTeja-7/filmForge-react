@@ -1,5 +1,5 @@
-import Container from "./layout/Container"
-import TitleLogo from "./common/TitleLogo"
+import Container from "../layout/Container"
+import TitleLogo from "../common/TitleLogo"
 
 const LandingFooter = () => {
     return (
@@ -36,7 +36,7 @@ const LandingFooter = () => {
                             " >
                                 <li className="hover:text-filmforge-primary"><a href="">Community Guidelines</a></li>
                                 <li className="hover:text-filmforge-primary"><a href="">Privacy</a></li>
-                                <li className="hover:text-filmforge-primary"><a href="">Privacy</a></li>
+                                <li className="hover:text-filmforge-primary"><a href="">Terms</a></li>
                             </ul>
                         </nav>
                     </div>
