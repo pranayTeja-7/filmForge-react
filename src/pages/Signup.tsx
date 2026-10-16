@@ -4,11 +4,11 @@ import LandingFooter from "../components/landing/LandingFooter"
 
 const SignupPage = () => {
     return (
-        <>
+        <div className="flex min-h-screen flex-col">
             <SignupHeader />
             <SignupHero />
             <LandingFooter />
-        </>
+        </div>
     )
 }
 

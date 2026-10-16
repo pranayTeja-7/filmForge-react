@@ -1,3 +1,5 @@
+import { Link } from "react-router"
+
 type TitleClassProps = {
     size:"landingHeader"|"footer"|"signupHeader"
 } 
@@ -13,7 +15,7 @@ const titleClasses = {
 const TitleLogo = (props:TitleClassProps) => {
     return (
         <div className="">
-            <a href="" className={`
+            <Link to="/" className={`
                     font-display 
                     font-extrabold 
                     ${titleClasses[props.size]}
@@ -22,7 +24,7 @@ const TitleLogo = (props:TitleClassProps) => {
                     leading-7
                 `}>
                 FILM<span className="text-filmforge-primary">FORGE</span>
-            </a>
+            </Link>
         </div>
     )
 }

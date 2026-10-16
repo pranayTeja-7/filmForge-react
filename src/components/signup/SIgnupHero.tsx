@@ -1,78 +1,95 @@
+import OnboardingOuterCard from "../common/signup-and-onboarding/OnboardingOuterCard"
+import OnboardingHeroIntro from "../common/signup-and-onboarding/OnboardingHeroIntro"
 import Container from "../layout/Container"
 import SignupFormError from "./SignupFormError"
-import { ArrowRight } from "lucide-react"
-import { ShieldCheck } from "lucide-react"
+import { zodvalidationError } from "../../utils/validationErrors"
+import { signupSchema } from "../../schemas/auth.schema"
+import { ArrowRight, ShieldCheck, Eye, EyeOff } from "lucide-react"
 import { Link } from "react-router"
 import type { SubmitEventHandler } from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
-const SignupHero = () => {
 
-    const [emailError, setEmailError] = useState("") 
-    const [passwordError, setPasswordError] = useState("") 
-    const [confirmPasswordError, setConfrimPasswordError] = useState("") 
-    const [generalError, setGeneralError] = useState("")
+const SignupHero = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [errors, setErrors] = useState({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        general: ""
+    })
+
+    const [passwordVisibility, setPasswordVisibility] = useState(false);
+    const [confirmPasswordVisibility, setConfirmPasswordVisibility] = useState(false);
+
     const navigate = useNavigate();
     const sumbmitMethod:SubmitEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
 
-        setEmailError("")
+        const result = signupSchema.safeParse({email, password, confirmPassword});
 
-        setGeneralError("")
-       
-        setPasswordError("")
+        if(!result.success){
+            const zodErrors = zodvalidationError(result.error);
 
-        setConfrimPasswordError("");
-
-        const email = formData.get("email")?.toString().trim();
-        const password = formData.get("password")?.toString()
-        const confirmPassword = formData.get("confirmPassword")?.toString();
-         
-
-        if(!(email && password && confirmPassword)){
-            setGeneralError("Please fill all the fields")
+            setErrors({
+                email: zodErrors.email || "",
+                password: zodErrors.password || "",
+                confirmPassword: zodErrors.confirmPassword || "",
+                general: ""
+            })
             return;
         }
 
-        if(!(
-            password.length >= 8 &&
-            /[A-Z]/.test(password) && 
-            /[a-z]/.test(password) && 
-            /[0-9]/.test(password) && 
-            /[^A-Za-z0-9]/.test(password)
-        )){
-            setPasswordError("Password is too weak. Must contain at least 8 characters, including an uppercase letter, lowercase letter, number and a symbol.")
-            return;
-        }
+        const validatedData = result.data;
+
 
         if(password !== confirmPassword){
-            console.log("passwords do not match");
-            setConfrimPasswordError("Passwords do not match")
+            setErrors({
+                email: "",
+                password: "",
+                confirmPassword: "Passwords do not match",
+                general: ""
+            })
             return;
         }
 
         const response = await fetch("http://localhost:3000/auth/signup", {
             method: "post",
+            credentials: "include",
             headers: {
-                "Content-Type": "Application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                email,
-                password,
-                confirmPassword
-            })
+            body: JSON.stringify(validatedData)
         })
 
         const data = await response.json()
 
         if(response.ok === false){ 
+            console.log(data)
+            
             if(data.code === "EMAIL_ALREADY_EXISTS"){
-                setEmailError("An account with this email address already exists. Try logging in instead.");
+                setErrors({
+                    email: "An account with this email address already exists. Try logging in instead.",
+                    password: "",
+                    confirmPassword: "",
+                    general: ""
+                })
                 return;
             }
-            setGeneralError(data.message);
+
+            if(data.code === "VALIDATION_ERROR"){
+                setErrors({
+                    email: "",
+                    password: "",
+                    confirmPassword: "",
+                    general: data.details[0].message
+                })
+            }
+
             return;
         }
 
@@ -80,65 +97,18 @@ const SignupHero = () => {
             navigate("/complete-profile");
         }
 
-        console.log(response)
-        console.log(data)
     }
 
     return (
-        <main className="bg-filmforge-background py-8   ">
+        <main className="bg-filmforge-background py-5 filmforge-400:py-8 flex-1 flex flex-col justify-center">
             <Container>
                 <div className="flex justify-center items-center">
-                    <div className="
-                        p-5 filmforge-400:p-8 
-                        flex 
-                        flex-col 
-                        gap-5.5  filmforge-400:gap-8
-                        items-start
-                        justify-center 
-                        bg-filmforge-background-5 
-                        rounded-md border 
-                        border-filmforge-stroke-secondary
-                        max-w-120
-                    ">
-                        <div className="flex flex-col gap-2 items-start">
-                            <div className="
-                                flex 
-                                items-center
-                                px-3
-                                py-1
-                                rounded-xl
-                                bg-filmforge-background-secondary
-                                w-fit
-                                gap-1.75
-                            ">
-                                <div className="w-1.5 h-1.5 bg-filmforge-primary rounded-[50%]"></div>
-                                <div className="
-                                    font-mono
-                                    text-[10px]
-                                    leading-5
-                                    tracking-[1px]
-                                    font-medium
-                                    text-filmforge-primary
-                                    
-                                ">FILMMAKER ONBOARDING</div>
-                            </div>
-                            <h1 className="
-                                font-display
-                                font-bold
-                                text-2xl filmforge-400:text-3xl
-                                text-filmforge-text
-                                leading-9
-                                tracking-[-0.75px]
-
-                            ">CREATE YOUR ACCOUNT</h1>
-                            <p className="
-                                font-body
-                                text-[13px] filmforge-400:text-sm
-                                text-filmforge-text-secondary
-                                leading-[22.8px]
-                                tracking-normal
-                            ">Build your filmmaker profile and discover collaborators.</p>
-                        </div>
+                    <OnboardingOuterCard maxWidthClass="max-w-120">
+                        <OnboardingHeroIntro 
+                            label="FILMMAKER ONBOARDING"
+                            title="CREATE YOUR ACCOUNT"
+                            description="Build your filmmaker profile and discover collaborators."
+                        />
                         <form action="" onSubmit={sumbmitMethod} className="
                             flex
                             flex-col
@@ -146,7 +116,7 @@ const SignupHero = () => {
                             w-full
                         ">
                             <div className="flex flex-col gap-2">
-                                <SignupFormError error={generalError}/>
+                                <SignupFormError error={errors.general}/>
                                 <div className="flex items-center justify-between ">
                                     <label htmlFor="email" className="
                                         text-xs filmforge-400:text-sm
@@ -171,9 +141,12 @@ const SignupHero = () => {
                                     ">REQUIRED</div>
                                 </div>
                                 <input 
+                                    required
                                     type="email"
                                     name="email" 
                                     id="email" 
+                                    value={email}
+                                    onChange={(event) => {setEmail(event.target.value)}}
                                     placeholder="director@filmforge.org"
                                     className="
                                         placeholder:text-xs filmforge-400:placeholder:text-sm
@@ -188,7 +161,7 @@ const SignupHero = () => {
                                         w-full
                                     "
                                 />
-                                <SignupFormError error={emailError} />
+                                <SignupFormError error={errors.email} />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center justify-between ">
@@ -211,25 +184,44 @@ const SignupHero = () => {
                                         px-1.5
                                     ">MIN. 8 CHARACTERS</div>
                                 </div>
-                                <input 
-                                    type="password"
-                                    name="password" 
-                                    id="password" 
-                                    placeholder="password"
-                                    className="
-                                        placeholder:text-xs filmforge-400:placeholder:text-sm
-                                        placeholder:tracking-normal
-                                        placeholder:text-filmforge-placeholder
-                                        placeholder:font-body
-                                        px-4 py-3.5
-                                        bg-filmforge-background-6
-                                        border border-filmforge-stroke-secondary
-                                        rounded-md
-                                        text-filmforge-text
-                                        w-full
-                                    "
-                                />
-                                <SignupFormError error={passwordError}/>
+                                <div className="relative">
+                                    <input 
+                                        required
+                                        type={passwordVisibility ? "text" : "password"}
+                                        name="password" 
+                                        id="password" 
+                                        value={password}
+                                        onChange={(event) => {setPassword(event.target.value)}}
+                                        placeholder="password"
+                                        className="
+                                            placeholder:text-xs filmforge-400:placeholder:text-sm
+                                            placeholder:tracking-normal
+                                            placeholder:text-filmforge-placeholder
+                                            placeholder:font-body
+                                            px-4 py-3.5
+                                            bg-filmforge-background-6
+                                            border border-filmforge-stroke-secondary
+                                            rounded-md
+                                            text-filmforge-text
+                                            w-full
+                                        "
+                                    />
+                                    <button 
+                                        type="button" 
+                                        className={`
+                                            absolute right-4 top-1/2 
+                                            -translate-y-1/2
+                                            hover:cursor-pointer
+                                            ${password ? "block" : "hidden"}
+                                        `} 
+                                        onClick={() => {setPasswordVisibility((prev) => !prev)}}
+                                    >
+                                        {
+                                            passwordVisibility ? <EyeOff size={18} className="text-filmforge-placeholder"/> : <Eye size={18} className="text-filmforge-placeholder"/>
+                                        }
+                                    </button>
+                                </div>
+                                <SignupFormError error={errors.password}/>
                             </div>
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center justify-between ">
@@ -255,30 +247,49 @@ const SignupHero = () => {
                                         px-1.5
                                     ">CONFIRMATION</div>
                                 </div>
-                                <input 
-                                    type="password"
-                                    name="confirmPassword" 
-                                    id="confirmPassword" 
-                                    placeholder="confirm password"
-                                    className="
-                                        placeholder:text-xs filmforge-400:placeholder:text-sm
-                                        placeholder:tracking-normal
-                                        placeholder:text-filmforge-placeholder
-                                        placeholder:font-body
-                                        px-4 py-3.5
-                                        bg-filmforge-background-6
-                                        border border-filmforge-stroke-secondary
-                                        rounded-md
-                                        text-filmforge-text
-                                        w-full
-                                    "
-                                />
-                                <SignupFormError error={confirmPasswordError}/>
+                                <div className="relative">
+                                    <input 
+                                        required
+                                        type={confirmPasswordVisibility ? "text" : "password"}
+                                        name="confirmPassword" 
+                                        id="confirmPassword" 
+                                        value={confirmPassword}
+                                        onChange={(event) => {setConfirmPassword(event.target.value)}}
+                                        placeholder="confirm password"
+                                        className="
+                                            placeholder:text-xs filmforge-400:placeholder:text-sm
+                                            placeholder:tracking-normal
+                                            placeholder:text-filmforge-placeholder
+                                            placeholder:font-body
+                                            px-4 py-3.5
+                                            bg-filmforge-background-6
+                                            border border-filmforge-stroke-secondary
+                                            rounded-md
+                                            text-filmforge-text
+                                            w-full
+                                        "
+                                    />
+                                    <button 
+                                        type="button" 
+                                        className={`
+                                            absolute right-4 top-1/2 
+                                            -translate-y-1/2
+                                            hover:cursor-pointer
+                                            ${confirmPassword ? "block" : "hidden"}
+                                        `} 
+                                        onClick={() => {setConfirmPasswordVisibility((prev) => !prev)}}
+                                    >
+                                        {
+                                            confirmPasswordVisibility ? <EyeOff size={18} className="text-filmforge-placeholder"/> : <Eye size={18} className="text-filmforge-placeholder"/>
+                                        }
+                                    </button>
+                                </div>
+                                <SignupFormError error={errors.confirmPassword}/>
                             </div>
                             <button className="
                                 font-display
                                 font-semibold
-                                text-sm
+                                text-xs filmforge-400:text-sm
                                 text-filmforge-background
                                 bg-filmforge-primary
                                 leading-5
@@ -290,7 +301,7 @@ const SignupHero = () => {
                                 py-3.5
                                 rounded-md
                                 hover:cursor-pointer
-                            "><span>GET STARTED</span> <ArrowRight className="h-4.5 w-4.5 self-start"/></button>
+                            "><span>CREATE YOUR ACCOUNT</span> <ArrowRight className="h-4.5 w-4.5 self-start"/></button>
                             <div className="flex items-start gap-2 p-3 bg-filmforge-background-6 border border-filmforge-stroke-secondary">
                                 <ShieldCheck className="
                                     w-6 h-5
@@ -333,9 +344,8 @@ const SignupHero = () => {
                                 whitespace-nowrap
                             ">LOG IN</Link>
                         </div>
-                    </div>
+                    </OnboardingOuterCard>
                 </div>
-
             </Container>
         </main>
     )
