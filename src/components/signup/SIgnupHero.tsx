@@ -45,58 +45,72 @@ const SignupHero = () => {
         }
 
         const validatedData = result.data;
-
-
-        if(password !== confirmPassword){
-            setErrors({
-                email: "",
-                password: "",
-                confirmPassword: "Passwords do not match",
-                general: ""
+        
+        try {
+            const response = await fetch("http://localhost:3000/auth/signup", {
+                method: "post",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(validatedData)
             })
-            return;
-        }
+    
+            const data = await response.json()
+                if(!response.ok){ 
+                console.log(data)
+                
+                if(data.code === "EMAIL_ALREADY_EXISTS"){
+                    setErrors({
+                        email: "An account with this email address already exists. Try logging in instead.",
+                        password: "",
+                        confirmPassword: "",
+                        general: ""
+                    })
+                    return;
+                }
 
-        const response = await fetch("http://localhost:3000/auth/signup", {
-            method: "post",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(validatedData)
-        })
+                if(data.code === "VALIDATION_ERROR"){
+                    setErrors({
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                        general: data.details[0].message
+                    })
+                    return;
+                }
 
-        const data = await response.json()
-
-        if(response.ok === false){ 
-            console.log(data)
-            
-            if(data.code === "EMAIL_ALREADY_EXISTS"){
-                setErrors({
-                    email: "An account with this email address already exists. Try logging in instead.",
-                    password: "",
-                    confirmPassword: "",
-                    general: ""
-                })
-                return;
-            }
-
-            if(data.code === "VALIDATION_ERROR"){
                 setErrors({
                     email: "",
                     password: "",
                     confirmPassword: "",
-                    general: data.details[0].message
+                    general: "Something went wrong while creating your account. Please try again."
                 })
+
+                console.log("Signup failed", {
+                    status: response.status,
+                    code: data?.code,
+                    message: data?.message
+                })
+                return;
             }
 
+            if(response.ok === true){
+                navigate("/complete-profile");
+            }  
+            
+            
+
+        } catch (error) {
+            console.log(error);
+            setErrors({
+                email: "",
+                password: "",
+                confirmPassword: "",
+                general: "Unable to connect. Please try again."
+            })
             return;
         }
-
-        if(response.ok === true){
-            navigate("/complete-profile");
-        }
-
     }
 
     return (

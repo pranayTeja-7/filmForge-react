@@ -2,7 +2,7 @@ import { CircleAlert } from "lucide-react"
 
 
 type errorProps = {
-    error:string|null,
+    error:string
 }
 
 const SignupFormError = (props:errorProps) => {

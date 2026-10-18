@@ -5,7 +5,11 @@ import OnboardingFormButton from "../common/signup-and-onboarding/OnboardingForm
 import { Link } from "react-router"
 import { ArrowUpRight, LockKeyhole, Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
+import { useNavigate } from "react-router"
 import type { SubmitEventHandler } from "react"
+import { loginSchema } from "../../schemas/auth.schema"
+import { zodvalidationError } from "../../utils/validationErrors"
+import SignupFormError from "../signup/SignupFormError"
 
 
 const LoginHero = () => {
@@ -14,23 +18,86 @@ const LoginHero = () => {
     const [password, setPassword] = useState("");
     const [passwordVisibility, setPasswordVisibility] = useState(false)
 
+    const [errors, setErrors] = useState({
+        email: "",
+        password: "",
+        general: ""
+    })
+
+    const navigate = useNavigate();
+
     const handleSubmit:SubmitEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
-        const response = await fetch("http://localhost:3000/auth/login",{
-            method: "post",
-            credentials: "include",
-            headers: {
-                "content-type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                password
+
+        const result = loginSchema.safeParse({email, password})
+
+        if(!result.success){
+            const zodErrors = zodvalidationError(result.error);
+            setErrors({
+                email: zodErrors.email || "",
+                password: zodErrors.password || "",
+                general: ""
             })
-        })
+            return;
+        }
 
-        const data = await response.json();
-        console.log(data)
+        try {
+            const response = await fetch("http://localhost:3000/auth/login",{
+                method: "post",
+                credentials: "include",
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+            })
+            
+            const data = await response.json();
 
+            if(!response.ok){
+                if(data.code === "INVALID_CREDENTIALS"){
+                    setErrors({
+                        email: "",
+                        password: "",
+                        general: "Invalid credentials."
+                    })
+                    return;
+                }
+
+                setErrors({
+                    email: "",
+                    password: "",
+                    general: "Login failed. Please try again"
+                })
+
+                console.log("Login failed", {
+                    status: response.status,
+                    code: data?.code,
+                    message: data?.message
+                })
+                return;
+            }
+
+            if(response.ok === true){
+                setErrors({
+                    email: "",
+                    password: "",
+                    general: ""
+                })
+                navigate("/");
+            }
+
+        } catch (error) {
+            console.log(error);
+            setErrors({
+                email: "",
+                password: "",
+                general: "Unable to connect. Please try again"
+            })
+            return;
+        }
 
     }
 
@@ -91,6 +158,7 @@ const LoginHero = () => {
                                         w-full
                                     "
                                 />
+                                <SignupFormError error={errors.email}/>
                             </div>
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-center justify-between ">
@@ -149,8 +217,12 @@ const LoginHero = () => {
                                         {passwordVisibility ? <EyeOff size={18} className="text-filmforge-placeholder"/> : <Eye size={18} className="text-filmforge-placeholder"/>}
                                     </button>
                                 </div>
+                                <SignupFormError error={errors.password}/>
                             </div>     
-                            <OnboardingFormButton text="LOG IN"/>   
+                            <div className="flex flex-col gap-2.5">
+                                <OnboardingFormButton text="LOG IN"/>   
+                                <SignupFormError error={errors.general}/>
+                            </div>
                             <div className="flex justify-center items-center gap-2 filmforge-400:gap-3">
                                 <div className="
                                     font-body

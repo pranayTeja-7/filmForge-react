@@ -1,4 +1,4 @@
-import OnboardingStatus from "../Onboarding/OnboardingStatus"
+import OnboardingStatus from "./OnboardingStatus"
 import OnboardingHeroIntro from "../common/signup-and-onboarding/OnboardingHeroIntro"
 import OnboardingFormButton from "../common/signup-and-onboarding/OnboardingFormButton"
 import OnboardingOuterCard from "../common/signup-and-onboarding/OnboardingOuterCard"

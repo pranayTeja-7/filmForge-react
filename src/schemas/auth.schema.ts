@@ -10,7 +10,9 @@ export const signupSchema = z.object({
         "Password must contain an uppercase letter, a lowercase letter, a number, and a special character"
     ),
     confirmPassword: z.string()
-})
+}).refine((data) => {
+    return data.password === data.confirmPassword
+}, {error: "Passwords do not match", path: ["confirmPassword"]})
 
 export const loginSchema = z.object({
     email: z.email().trim().toLowerCase(),

@@ -1,4 +1,4 @@
-import OnboardingAboutYouHero from "../components/OnboardingAboutYou/OnboardingAboutYouHero"
+import OnboardingAboutYouHero from "../components/Onboarding/OnboardingAboutYouHero"
 import SignupHeader from "../components/signup/SignupHeader"
 import LandingFooter from "../components/landing/LandingFooter"
 

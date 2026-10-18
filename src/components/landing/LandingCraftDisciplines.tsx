@@ -54,6 +54,7 @@ const LandingCraftDisciplines = () => {
                                         rounded-xs
                                         bg-filmforge-background-secondary
                                         text-filmforge-text-secondary
+                                        hover:text-filmforge-primary
                                         border 
                                         border-filmforge-stroke/40
                                         whitespace-nowrap

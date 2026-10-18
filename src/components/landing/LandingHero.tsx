@@ -1,6 +1,7 @@
 import Container from "../layout/Container"
 import { ArrowRight } from "lucide-react"
 import heroImage from "../../assets/images/landing-hero-image.png"
+import { Link } from "react-router"
 
 const LandingHero = () => {
     return (
@@ -61,7 +62,7 @@ const LandingHero = () => {
                             filmforge-400:justify-start
                             flex-col filmforge-400:flex-row
                         ">
-                            <a href="" className="
+                            <Link to="/signup" className="
                                 flex gap-2
                                 items-center
                                 justify-center
@@ -76,8 +77,8 @@ const LandingHero = () => {
                                 rounded-md
                                 font-semibold
                                 hover:bg-filmforge-primary/85
-                            "><span>GET STARTED</span> <ArrowRight className="h-4 w-4"/> </a>
-                            <a href="" className="
+                            "><span>GET STARTED</span> <ArrowRight className="h-4 w-4"/> </Link>
+                            <Link to="/login" className="
                                 flex
                                 items-center
                                 justify-center
@@ -95,7 +96,7 @@ const LandingHero = () => {
                                 hover:text-filmforge-primary
                                 hover:px-5.75
 
-                            ">LOG IN</a>
+                            ">LOG IN</Link>
                         </div>
                     </div>
                     <div className="w-full  lg:w-1/2 p-2.25 bg-filmforge-background-4 flex flex-col border border-filmforge-stroke/50 rounded-lg">
