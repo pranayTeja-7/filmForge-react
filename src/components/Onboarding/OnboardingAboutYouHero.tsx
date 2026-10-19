@@ -10,7 +10,7 @@ const OnboardingAboutYouHero = () => {
             <Container>
                 <div className="flex justify-center">
                     <div className="max-w-160 w-full flex flex-col gap-8">
-                        <OnboardingStatus status="yourRoles"/>
+                        <OnboardingStatus status="aboutYou"/>
                         <OnboardingOuterCard maxWidthClass="w-full">
                             <OnboardingHeroIntro 
                                 label="STEP 01 · ABOUT YOU"

@@ -104,7 +104,7 @@ const LoginHero = () => {
     return (
         <main className="bg-filmforge-background py-5 filmforge-400:py-8 flex-1 flex flex-col justify-center">
             <Container>
-                <div className="flex justify-center  items-center">
+                <div className="flex flex-col justify-center  items-center">
                     <OnboardingOuterCard maxWidthClass="max-w-xl w-full">
                         <OnboardingHeroIntro 
                             label="FILMMAKER ACCESS"

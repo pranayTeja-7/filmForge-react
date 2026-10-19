@@ -4,7 +4,7 @@ import Container from "../layout/Container";
 
 const SignupHeader = () => {
     return (
-        <header className="bg-filmforge-background border border-filmforge-stroke-secondary">
+        <header className="bg-filmforge-background border-b border-filmforge-stroke-secondary">
             <Container>
                 <div className="flex justify-between py-5 items-center">
                     <TitleLogo size="signupHeader"/>
