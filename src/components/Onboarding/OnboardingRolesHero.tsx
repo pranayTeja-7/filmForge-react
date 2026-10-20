@@ -30,6 +30,7 @@ const OnboardingRolesHero = () => {
 
     const [error, setError] = useState("");
     const [roles, setRoles] = useState<Role[]>([]);
+    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchRoles = async() => {
@@ -53,7 +54,24 @@ const OnboardingRolesHero = () => {
             }
         }  
         fetchRoles();
-    })
+    }, [])
+
+    const handleRoleTrigger = (roleId:string) => {
+        if(selectedRoles.includes(roleId)){
+            setSelectedRoles((prevRoles) => {
+                return prevRoles.filter((id) => {
+                    return id !== roleId
+                })
+            })
+        }
+        else{
+            setSelectedRoles((prevRoles) => {
+                prevRoles.push(roleId);
+                return [...prevRoles];
+            })
+        }
+    }
+
     return(
         <main className="bg-filmforge-background py-5 filmforge-400:py-8 flex-1 flex flex-col justify-center">
             <Container>
@@ -74,8 +92,10 @@ const OnboardingRolesHero = () => {
                                     {roles.map((role) => {
                                         return <OnboardingRoleCheckBox 
                                             key={role.id}
-                                            role={role.name}
+                                            role={role}
                                             icon={roleIcons[role.name.toLowerCase()]}
+                                            onToggle={handleRoleTrigger}
+                                            checked={selectedRoles.includes(role.id) ? true : false}
                                         />
                                     })}
                                 </div>

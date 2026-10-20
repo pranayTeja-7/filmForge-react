@@ -10,6 +10,7 @@ import type { SubmitEventHandler } from "react"
 import { loginSchema } from "../../schemas/auth.schema"
 import { zodvalidationError } from "../../utils/validationErrors"
 import SignupFormError from "../signup/SignupFormError"
+import { useLocation } from "react-router"
 
 
 const LoginHero = () => {
@@ -18,10 +19,12 @@ const LoginHero = () => {
     const [password, setPassword] = useState("");
     const [passwordVisibility, setPasswordVisibility] = useState(false)
 
+    const location = useLocation();
+
     const [errors, setErrors] = useState({
         email: "",
         password: "",
-        general: ""
+        general: location.state?.message || ""
     })
 
     const navigate = useNavigate();
@@ -219,9 +222,11 @@ const LoginHero = () => {
                                 </div>
                                 <SignupFormError error={errors.password}/>
                             </div>     
-                            <div className="flex flex-col gap-2.5">
+                            <div className="flex flex-col gap-6">
                                 <OnboardingFormButton text="LOG IN"/>   
-                                <SignupFormError error={errors.general}/>
+                                <div className="self-center">
+                                    <SignupFormError error={errors.general}/>
+                                </div>
                             </div>
                             <div className="flex justify-center items-center gap-2 filmforge-400:gap-3">
                                 <div className="

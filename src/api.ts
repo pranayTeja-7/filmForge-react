@@ -18,7 +18,7 @@ const requestFunction = async (apiUrl:string, options:RequestInit = {}) => {
             const refreshData = await refreshResponse.json();
 
             if(!refreshResponse.ok){
-                throw new ApiError(refreshResponse.status, refreshData.message, data?.code)
+                throw new ApiError(refreshResponse.status, refreshData.message, refreshData?.code)
             }
 
             if(refreshResponse.status === 200){
@@ -30,16 +30,18 @@ const requestFunction = async (apiUrl:string, options:RequestInit = {}) => {
                 const retiredData = await retriedResponse.json();
 
                 if(!retriedResponse.ok){
-                    throw new ApiError(retriedResponse.status, retiredData.message, data?.code)
+                    throw new ApiError(retriedResponse.status, retiredData.message, retiredData?.code)
                 }
 
-                return retiredData;
+                const response = retriedResponse;
+                const data = retiredData
+                return {response, data};
             }
         }
         throw new ApiError(response.status, data.message, data?.code)
     }
 
-    return data;
+    return {response, data};
 
 }
 

@@ -3,14 +3,15 @@ import { Check } from "lucide-react"
 import { useState } from "react"
 
 type OnboadingRoleCheckBoxPropsType = {
-    role:string,
-    icon:ReactNode
+    role:{id:string, name:string},
+    icon:ReactNode,
+    checked:boolean
+    onToggle: (roleId:string) => void
 }
 
 
 const OnboardingRoleCheckBox = (props:OnboadingRoleCheckBoxPropsType) => {
 
-const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
     return (
         <div 
@@ -22,29 +23,31 @@ const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
                 items-center
                 rounded-md
                 border border-filmforge-stroke-secondary
+                hover:cursor-pointer
             "
+            onClick={() => {props.onToggle(props.role.id)}}
         >
             <div className="flex gap-3 items-center ">
                 <div className="p-2 border border-filmforge-stroke-secondary bg-filmforge-background-5">{props.icon}</div>
-                <label htmlFor={props.role.toLowerCase()} className="
+                <label htmlFor={props.role.name.toLowerCase()} className="
                     font-body
                     font-medium
                     text-filmforge-text
                     text-sm
                     leading-5
                     tracking-[0.35px]
-                ">{props.role}</label>
+                ">{props.role.name}</label>
             </div>
             <input
+                checked={props.checked}
                 type="checkbox" 
-                name={props.role.toLowerCase()} 
-                id={props.role.toLowerCase()} 
+                name={props.role.name.toLowerCase()} 
+                id={props.role.name.toLowerCase()} 
                 className={`
                     w-5 h-5
-                    appearance-none
-                    bg-filmforge-background-5
-                    border border-filmforge-stroke-secondary
+                    hover:cursor-pointer
                 `}
+                
             />
         </div>
     )
