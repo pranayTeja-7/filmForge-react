@@ -12,3 +12,12 @@ export const profileSchema = z.object({
 })
 
 
+export const rolesSchema = z.object({
+    roleIds: z.array(z.uuid({error: "One or more roleId is invalid"}))
+        .min(1, {error: "Select atleast one role"})
+        .refine((array) => {
+            return new Set(array).size === array.length
+        },{
+            error: "All roleIds must be unique"
+        })
+})

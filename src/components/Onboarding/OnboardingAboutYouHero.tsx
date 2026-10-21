@@ -76,6 +76,13 @@ const OnboardingAboutYouHero = () => {
             
         } catch (error) {
             if(error instanceof ApiError && error.status === 401){
+                setErrors({
+                    displayName: "",
+                    bio: "",
+                    experience: "",
+                    location: "",
+                    general: ""
+                })
                 return navigate("/login", {
                     state: {
                         message: "Session expired. Please login"

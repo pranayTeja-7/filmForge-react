@@ -4,15 +4,21 @@ import OnboardingFormButton from "../common/signup-and-onboarding/OnboardingForm
 import OnboardingRoleCheckBox from "./OnboardingRoleCheckBox";
 import Container from "../layout/Container";
 import OnboardingOuterCard from "../common/signup-and-onboarding/OnboardingOuterCard";
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode, type SubmitEventHandler } from "react";
 import { UserRound, Film, Clapperboard, PenTool, AudioLines, KeyboardMusic, ListMusic, NotepadText, Video } from "lucide-react";
+import requestFunction from "../../api";
+import { rolesSchema } from "../../schemas/profile.schema";
+import { zodvalidationError } from "../../utils/validationErrors";
+import SignupFormError from "../signup/SignupFormError";
+import { useNavigate } from "react-router";
+import { ApiError } from "../../errors/ApiError";
 
 type Role = {
     id:string,
     name:string,
 }
 
-const iconClassNameText = "text-filmforge-text-4 h-3.75 w-3.75"
+const iconClassNameText = "text-filmforge-text-4 h-3.75 w-3.75 group-hover:text-filmforge-primary "
 
 const roleIcons:Record<string, ReactNode> = {
     director: <Clapperboard className={iconClassNameText}/>,
@@ -28,9 +34,15 @@ const roleIcons:Record<string, ReactNode> = {
 
 const OnboardingRolesHero = () => {
 
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState({
+        roleIds: "",
+        general: ""
+    });
+
     const [roles, setRoles] = useState<Role[]>([]);
     const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRoles = async() => {
@@ -45,12 +57,15 @@ const OnboardingRolesHero = () => {
                 }
 
                 const data = await response.json();
-                
+                console.log(data.roles)
                 setRoles(data.roles);
 
             } catch (error) {
                 console.log("Fetch failed", error)
-                setError("Failed to fetch roles. Please try again.")
+                setErrors({
+                    roleIds: "",
+                    general: "Failed to fetch roles. Please try again."
+                })
             }
         }  
         fetchRoles();
@@ -59,17 +74,85 @@ const OnboardingRolesHero = () => {
     const handleRoleTrigger = (roleId:string) => {
         if(selectedRoles.includes(roleId)){
             setSelectedRoles((prevRoles) => {
-                return prevRoles.filter((id) => {
+                return prevRoles.filter((id) => {   
                     return id !== roleId
                 })
             })
         }
         else{
             setSelectedRoles((prevRoles) => {
-                prevRoles.push(roleId);
-                return [...prevRoles];
+                const prevRolesCopy = [...prevRoles];
+                prevRolesCopy.push(roleId);
+                return prevRolesCopy
             })
         }
+    }
+
+
+    const handleSubmit:SubmitEventHandler<HTMLFormElement> = async (event) => {
+        event.preventDefault();
+        console.log(selectedRoles)
+        const result = rolesSchema.safeParse({
+            roleIds: selectedRoles
+        });
+
+        if(!result.success){
+            const zodErrors = zodvalidationError(result.error);
+            setErrors({
+                roleIds: zodErrors.roleIds || "",
+                general: ""
+            })
+            return;
+        }
+
+        const validatedData = result.data
+
+        try {
+            const {response, data} = await requestFunction("profile/roles", {
+                method: "post",
+                headers: {
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify(validatedData)
+            })
+
+            if(response.status === 201){
+                navigate("/complete-profile/portfolio");
+            }
+
+        } catch (error) {
+            if(error instanceof ApiError && error.status === 401){
+                setErrors({
+                    roleIds: "",
+                    general: "",
+                })
+                return navigate("/login", {state: { message: "Session expired. Please login" }})
+            }
+
+            if(error instanceof ApiError && error.status === 400 && error.code === "INVALID_ROLE_IDS"){
+                setErrors({
+                    roleIds: "One or more roleIds are invalid",
+                    general: "",
+                })
+                return; 
+            }
+
+            if(error instanceof ApiError && error.status === 409 && error.code === "ROLES_ALREADY_EXIST"){
+                setErrors({
+                    roleIds: "",
+                    general: "Profile roles for this profile already exist",
+                })
+                return;
+            }
+
+            setErrors({
+                roleIds: "",
+                general: "Unable to create roles. Please try again"
+            })
+            console.log("post roles failed", error);
+        }
+
+
     }
 
     return(
@@ -87,19 +170,25 @@ const OnboardingRolesHero = () => {
                                     more than one.
                                 "
                             />
-                            <form action="" className="w-full flex flex-col gap-6 " >
-                                <div className="grid grid-cols-2 gap-3 w-full">
-                                    {roles.map((role) => {
-                                        return <OnboardingRoleCheckBox 
-                                            key={role.id}
-                                            role={role}
-                                            icon={roleIcons[role.name.toLowerCase()]}
-                                            onToggle={handleRoleTrigger}
-                                            checked={selectedRoles.includes(role.id) ? true : false}
-                                        />
-                                    })}
+                            <form onSubmit={handleSubmit} className="w-full flex flex-col gap-8" >
+                                <div className="flex flex-col gap-3">
+                                    <SignupFormError error={errors.roleIds}/>
+                                    <SignupFormError error={errors.general}/>
+                                    <div className={`grid grid-cols-2 gap-3 w-full ${roles.length === 0 ? "hidden" : "block"}`}>
+                                        {roles.map((role) => {
+                                            return <OnboardingRoleCheckBox 
+                                                key={role.id}
+                                                role={role}
+                                                icon={roleIcons[role.name.toLowerCase()]}
+                                                onToggle={handleRoleTrigger}
+                                                checked={selectedRoles.includes(role.id) ? true : false}
+                                            />
+                                        })}
+                                    </div>
                                 </div>
-                                <OnboardingFormButton text="CONTINUE TO PORTFOLIO"/>
+                                <div className={`${roles.length === 0 ? "hidden" : "block"} flex flex-col`}>
+                                    <OnboardingFormButton text="CONTINUE TO PORTFOLIO"/>
+                                </div>
                             </form>
                         </OnboardingOuterCard>
                     </div>
