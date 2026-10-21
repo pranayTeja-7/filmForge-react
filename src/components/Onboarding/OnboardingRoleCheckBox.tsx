@@ -1,6 +1,5 @@
 import type { ReactNode } from "react"
 import { Check } from "lucide-react"
-import { useState } from "react"
 
 type OnboadingRoleCheckBoxPropsType = {
     role:{id:string, name:string},
