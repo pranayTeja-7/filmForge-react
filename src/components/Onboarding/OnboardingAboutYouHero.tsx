@@ -54,7 +54,7 @@ const OnboardingAboutYouHero = () => {
         const body = result.data;
 
         try {
-            const {data, response} = await requestFunction("profile", {
+            const {response} = await requestFunction("profile", {
                 method: "post",
                 headers: {
                     "content-type": "application/json"
@@ -311,11 +311,9 @@ const OnboardingAboutYouHero = () => {
                                     </div>
                                     <SignupFormError error={errors.location}/>
                                 </div>          
-                                <div className="flex flex-col gap-2.5">
+                                <div className="flex flex-col gap-4">
                                     <OnboardingFormButton text="CONTINUE TO YOUR ROLES"/>                          
-                                    <div className="self-center">
-                                        <SignupFormError error={errors.general}/>
-                                    </div>
+                                    <SignupFormError error={errors.general}/>
                                 </div>
                             </form>
                         </OnboardingOuterCard>

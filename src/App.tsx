@@ -6,6 +6,7 @@ import LoginPage from "./pages/Login";
 import { Routes, Route } from "react-router";
 import TestApi from "./components/common/TestApi";
 import OnboardingRolesPage from "./pages/OnboardingRoles";
+import OnboardingPortfolioPage from "./pages/OnboardingPortfolio";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/complete-profile" element={<CompleteYourProfilePage />}/>
         <Route path="/complete-profile/about-you" element={<OnboardingAboutYouPage />}/>
         <Route path="/complete-profile/your-roles" element={<OnboardingRolesPage />}/>
+        <Route path="/complete-profile/portfolio" element={<OnboardingPortfolioPage />}/>
         <Route path="test-api" element={<TestApi />}/>
         <Route path="login" element={<LoginPage />}/>
       </Routes>

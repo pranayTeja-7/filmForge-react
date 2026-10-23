@@ -7,7 +7,7 @@ type OnboardingOuterCardProps = {
 const OnboardingOuterCard = (props:OnboardingOuterCardProps) => {
     return (
         <div className={`
-            p-4 filmforge-400:p-8 
+            p-4 filmforge-400:p-6 sm:p-8
             flex 
             flex-col 
             gap-5.5  filmforge-400:gap-8

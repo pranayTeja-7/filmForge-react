@@ -17,7 +17,7 @@ const OnboardingRoleCheckBox = (props:OnboadingRoleCheckBoxPropsType) => {
             htmlFor={props.role.name.toLowerCase()}
             className={`
                 ${props.checked ? "bg-filmforge-primary/10" : "bg-filmforge-background-6"}
-                p-4
+                p-3 filmforge-400:p-4
                 flex
                 justify-between
                 items-center
@@ -41,7 +41,7 @@ const OnboardingRoleCheckBox = (props:OnboadingRoleCheckBoxPropsType) => {
                     font-body
                     font-medium
                     text-filmforge-text
-                    text-sm
+                    text-sm filmforge-400:text-[16px] sm:text-sm
                     leading-5
                     tracking-[0.35px]
                 ">{props.role.name}</div>

@@ -222,12 +222,10 @@ const LoginHero = () => {
                                 </div>
                                 <SignupFormError error={errors.password}/>
                             </div>     
-                            <div className="flex flex-col gap-6">
-                                <OnboardingFormButton text="LOG IN"/>   
-                                <div className="self-center">
-                                    <SignupFormError error={errors.general}/>
-                                </div>
-                            </div>
+
+                            <OnboardingFormButton text="LOG IN"/>   
+                            <SignupFormError error={errors.general}/>
+                            
                             <div className="flex justify-center items-center gap-2 filmforge-400:gap-3">
                                 <div className="
                                     font-body

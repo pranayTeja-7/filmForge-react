@@ -108,7 +108,7 @@ const OnboardingRolesHero = () => {
         const validatedData = result.data
 
         try {
-            const {response, data} = await requestFunction("profile/roles", {
+            const {response} = await requestFunction("profile/roles", {
                 method: "post",
                 headers: {
                     "content-type": "application/json"
@@ -174,7 +174,13 @@ const OnboardingRolesHero = () => {
                                 <div className="flex flex-col gap-3">
                                     <SignupFormError error={errors.roleIds}/>
                                     <SignupFormError error={errors.general}/>
-                                    <div className={`grid grid-cols-2 gap-3 w-full ${roles.length === 0 ? "hidden" : "block"}`}>
+                                    <div className={`
+                                            grid 
+                                            grid-cols-1 sm:grid-cols-2 
+                                            gap-3 
+                                            w-full 
+                                            ${roles.length === 0 ? "hidden" : "block"}
+                                        `}>
                                         {roles.map((role) => {
                                             return <OnboardingRoleCheckBox 
                                                 key={role.id}
