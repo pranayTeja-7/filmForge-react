@@ -10,7 +10,7 @@ import requestFunction from "../../api"
 import { zodvalidationError } from "../../utils/validationErrors"
 import { profileSchema } from "../../schemas/profile.schema"
 import { ApiError } from "../../errors/ApiError"
-
+import { useLocation } from "react-router"
 
 const OnboardingAboutYouHero = () => {
 
@@ -20,13 +20,14 @@ const OnboardingAboutYouHero = () => {
     const [location, setLocation] = useState("");
     const navigate = useNavigate();
 
+    const navigatedFromlocation = useLocation()
 
     const [errors, setErrors] = useState({
         displayName: "",
         bio: "",
         experience: "",
         location: "",
-        general: ""
+        general: navigatedFromlocation.state?.message || ""
     })
 
     const handleSubmit:SubmitEventHandler<HTMLFormElement> = async (event) => {
@@ -104,7 +105,7 @@ const OnboardingAboutYouHero = () => {
                 bio: "",
                 experience: "",
                 location: "",
-                general: "Creating profile failed. Please try again"
+                general: "Something has gone wrong. Please try again"
             })
             console.log("POST profile failed", error);
         }

@@ -12,6 +12,7 @@ import { zodvalidationError } from "../../utils/validationErrors";
 import SignupFormError from "../signup/SignupFormError";
 import { useNavigate } from "react-router";
 import { ApiError } from "../../errors/ApiError";
+import { useLocation } from "react-router";
 
 type Role = {
     id:string,
@@ -34,9 +35,11 @@ const roleIcons:Record<string, ReactNode> = {
 
 const OnboardingRolesHero = () => {
 
+    const location = useLocation()
+
     const [errors, setErrors] = useState({
         roleIds: "",
-        general: ""
+        general: location.state?.message || ""
     });
 
     const [roles, setRoles] = useState<Role[]>([]);

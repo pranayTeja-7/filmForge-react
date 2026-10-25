@@ -10,7 +10,7 @@ const OnboardingOuterCard = (props:OnboardingOuterCardProps) => {
             p-4 filmforge-400:p-6 sm:p-8
             flex 
             flex-col 
-            gap-5.5  filmforge-400:gap-8
+            gap-5.5  filmforge-400:gap-6
             items-start
             justify-center 
             bg-filmforge-background-5 
