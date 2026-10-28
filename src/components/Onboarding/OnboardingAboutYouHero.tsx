@@ -11,8 +11,18 @@ import { zodvalidationError } from "../../utils/validationErrors"
 import { profileSchema } from "../../schemas/profile.schema"
 import { ApiError } from "../../errors/ApiError"
 import { useLocation } from "react-router"
+import { useContext } from "react"
+import AuthContext from "../../AuthContext"
 
 const OnboardingAboutYouHero = () => {
+
+    const auth = useContext(AuthContext);
+
+    if(!auth){
+        throw new Error("Onboarding/about-you page must be inside auth provider");
+    }
+
+    const {retryAuth} = auth 
 
     const [displayName, setDisplayName] = useState("");
     const [bio, setBio] = useState("");
@@ -72,6 +82,9 @@ const OnboardingAboutYouHero = () => {
                     location: "",
                     general: ""
                 })
+
+                await retryAuth();
+                
                 return navigate("/complete-profile/your-roles")
             }
             
@@ -120,6 +133,7 @@ const OnboardingAboutYouHero = () => {
                     <div className="max-w-160 w-full flex flex-col gap-8">
                         <OnboardingStatus status="aboutYou"/>
                         <OnboardingOuterCard maxWidthClass="w-full">
+                            <SignupFormError error={errors.general}/>
                             <OnboardingHeroIntro 
                                 label="STEP 01 · ABOUT YOU"
                                 title="TELL US ABOUT YOU"
@@ -312,10 +326,7 @@ const OnboardingAboutYouHero = () => {
                                     </div>
                                     <SignupFormError error={errors.location}/>
                                 </div>          
-                                <div className="flex flex-col gap-4">
-                                    <OnboardingFormButton text="CONTINUE TO YOUR ROLES"/>                          
-                                    <SignupFormError error={errors.general}/>
-                                </div>
+                                <OnboardingFormButton text="CONTINUE TO YOUR ROLES"/>                          
                             </form>
                         </OnboardingOuterCard>
                     </div>

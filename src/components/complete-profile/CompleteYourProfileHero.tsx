@@ -2,6 +2,7 @@ import OnboardingHeroIntro from "../common/signup-and-onboarding/OnboardingHeroI
 import OnboardingOuterCard from "../common/signup-and-onboarding/OnboardingOuterCard"
 import Container from "../layout/Container"
 import { ArrowRight, Info } from "lucide-react"
+import { Link } from "react-router"
 
 const CompleteYourProfileHero = () => {
     return (
@@ -167,7 +168,7 @@ const CompleteYourProfileHero = () => {
                         </div>  
                         
                         <div className="w-full flex flex-col gap-3">
-                            <button className="
+                            <Link to="/complete-profile/about-you" className="
                                 font-display
                                 font-semibold
                                 text-[11.5px] filmforge-400:text-sm
@@ -185,7 +186,7 @@ const CompleteYourProfileHero = () => {
                             ">
                                 <span>LET'S SET UP YOUR PROFILE</span> 
                                 <ArrowRight className="h-4.5 w-4.5 self-start hidden filmforge-400:block"/>
-                            </button>
+                            </Link>
                             <div className="flex items-center justify-center gap-2 p-3 bg-filmforge-background-5 border border-filmforge-stroke-secondary">
                                 <Info className="
                                     w-6 h-5

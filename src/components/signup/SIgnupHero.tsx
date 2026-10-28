@@ -7,11 +7,22 @@ import { signupSchema } from "../../schemas/auth.schema"
 import { ArrowRight, ShieldCheck, Eye, EyeOff } from "lucide-react"
 import { Link } from "react-router"
 import type { SubmitEventHandler } from "react"
-import { useState } from "react"
-import { useNavigate } from "react-router"
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import { useContext } from "react"
+import AuthContext from "../../AuthContext"
 
 
 const SignupHero = () => {
+
+    const auth = useContext(AuthContext);
+
+    if(!auth){
+        throw new Error("Signup page must be inside auth provider");
+    }
+
+    const {retryAuth} = auth
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -96,10 +107,10 @@ const SignupHero = () => {
             }
 
             if(response.ok === true){
+                await retryAuth();
+                console.log("setting auth state")
                 navigate("/complete-profile");
             }  
-            
-            
 
         } catch (error) {
             console.log(error);

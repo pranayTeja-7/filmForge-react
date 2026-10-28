@@ -13,11 +13,15 @@ import SignupFormError from "../signup/SignupFormError";
 import { useNavigate } from "react-router";
 import { ApiError } from "../../errors/ApiError";
 import { useLocation } from "react-router";
+import { useContext } from "react";
+import AuthContext from "../../AuthContext";
+
 
 type Role = {
     id:string,
     name:string,
 }
+
 
 const iconClassNameText = "text-filmforge-text-4 h-3.75 w-3.75 group-hover:text-filmforge-primary "
 
@@ -35,8 +39,15 @@ const roleIcons:Record<string, ReactNode> = {
 
 const OnboardingRolesHero = () => {
 
-    const location = useLocation()
+    const auth = useContext(AuthContext);
 
+    if(!auth){
+        throw new Error("Onboarding/your-roles page must be inside auth provider");
+    }
+
+    const {retryAuth} = auth
+
+    const location = useLocation()
     const [errors, setErrors] = useState({
         roleIds: "",
         general: location.state?.message || ""
@@ -120,6 +131,7 @@ const OnboardingRolesHero = () => {
             })
 
             if(response.status === 201){
+                await retryAuth();
                 navigate("/complete-profile/portfolio");
             }
 
@@ -130,6 +142,14 @@ const OnboardingRolesHero = () => {
                     general: "",
                 })
                 return navigate("/login", {state: { message: "Session expired. Please login" }})
+            }
+
+            if(error instanceof ApiError && error.status === 404 && error.code === "PROFILE_NOT_FOUND"){
+                setErrors({
+                    roleIds: "",
+                    general: ""
+                });
+                return navigate("/complete-profile/about-you", {state: {message: "Profile not found. Please complete the about you step first"}})
             }
 
             if(error instanceof ApiError && error.status === 400 && error.code === "INVALID_ROLE_IDS"){

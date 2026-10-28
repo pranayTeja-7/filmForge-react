@@ -5,7 +5,6 @@ import OnboardingHeroIntro from "../common/signup-and-onboarding/OnboardingHeroI
 import OnboardingPortfolioItemsList from "./OnboardingPortfolioItemsList";
 import { Clapperboard, Plus } from "lucide-react";
 import OnboardingFormButton from "../common/signup-and-onboarding/OnboardingFormButton";
-import { Link } from "react-router";
 import OnboardingPortfolioPopUp from "./OnboardingPortfolioPopUp";
 import { useState, useEffect } from "react";
 import requestFunction from "../../api";
@@ -13,6 +12,10 @@ import { ApiError } from "../../errors/ApiError";
 import { useNavigate } from "react-router";
 import SignupFormError from "../signup/SignupFormError";
 import ResponseMessage from "../common/signup-and-onboarding/ResponseMessage";
+import AuthContext from "../../AuthContext";
+import { useContext } from "react";
+
+
 
 export type itemData = {
     id:string,
@@ -25,7 +28,13 @@ export type itemData = {
 
 const OnboardingPortfolioHero = () => {
 
-    
+    const auth = useContext(AuthContext);
+
+    if(!auth){
+        throw new Error("Onboarding/portfolio page must be inside auth provider");
+    }
+
+    const {retryAuth} = auth
 
     const navigate = useNavigate()
 
@@ -112,7 +121,7 @@ const OnboardingPortfolioHero = () => {
     
     const handleFinishProfile = async () => {
         try {
-            const {response, data} = await requestFunction("profile/complete-profile", {
+            const {response} = await requestFunction("profile/complete-profile", {
                 method: "post"
             })
 
@@ -120,6 +129,7 @@ const OnboardingPortfolioHero = () => {
                 setErrors({
                     general: ""
                 })
+                await retryAuth();
                 return navigate("/")
             }
 
@@ -138,7 +148,7 @@ const OnboardingPortfolioHero = () => {
                 return navigate("/complete-profile/about-you", {state: {message: "Profile not found. Please complete the about you step first"}})
             }
 
-            if(error instanceof ApiError && error.status === 409 && (error.code === "INVALID_ONBOARDING_STATUS" || error.code === "ROLES_REQUIRED")){
+            if(error instanceof ApiError && error.status === 409 && error.code === "INVALID_ONBOARDING_STATUS"){
                 setErrors({
                     general: ""
                 });
@@ -309,7 +319,7 @@ const OnboardingPortfolioHero = () => {
                                 <div className="w-full" onClick={handleFinishProfile}>
                                     <OnboardingFormButton text="FINISH PROFILE"/>
                                 </div>
-                                <Link to="/" className={`
+                                <button type="button" onClick={handleFinishProfile} className={`
                                     font-medium font-mono
                                     text-filmforge-text-4
                                     text-[11px]
@@ -317,7 +327,7 @@ const OnboardingPortfolioHero = () => {
                                     tracking-[1.1px]
                                     hover:text-filmforge-text
                                     ${portfolioItems.length === 0 ? "block" : "hidden"}
-                                `}>SKIP FOR NOW</Link>
+                                `}>SKIP FOR NOW</button>
                             </div>
                         </OnboardingOuterCard>
                     </div>

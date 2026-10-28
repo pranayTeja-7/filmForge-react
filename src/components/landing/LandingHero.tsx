@@ -3,13 +3,14 @@ import { ArrowRight } from "lucide-react"
 import heroImage from "../../assets/images/landing-hero-image.png"
 import { Link } from "react-router"
 
+
 const LandingHero = () => {
+
     return (
         <section className="bg-filmforge-background pt-7 pb-9 lg:pb-16 sm:pt-16 ">
             <Container>
                 <div className="flex flex-col lg:flex-row lg:justify-between gap-5.5 filmforge-400:gap-9 lg:gap-6">
                     <div className="w-full lg:w-1/2 flex flex-col gap-5 ">
-                
                         <div className="
                             flex 
                             items-center

@@ -5,15 +5,23 @@ import OnboardingFormButton from "../common/signup-and-onboarding/OnboardingForm
 import { Link } from "react-router"
 import { ArrowUpRight, LockKeyhole, Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
-import { useNavigate } from "react-router"
 import type { SubmitEventHandler } from "react"
 import { loginSchema } from "../../schemas/auth.schema"
 import { zodvalidationError } from "../../utils/validationErrors"
 import SignupFormError from "../signup/SignupFormError"
 import { useLocation } from "react-router"
-
+import { useContext } from "react"
+import AuthContext from "../../AuthContext"
 
 const LoginHero = () => {
+
+    const auth = useContext(AuthContext);
+
+    if(!auth){
+        throw new Error("Signup page must be inside auth provider");
+    }
+
+    const {retryAuth} = auth;
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -27,7 +35,6 @@ const LoginHero = () => {
         general: location.state?.message || ""
     })
 
-    const navigate = useNavigate();
 
     const handleSubmit:SubmitEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault();
@@ -89,7 +96,7 @@ const LoginHero = () => {
                     password: "",
                     general: ""
                 })
-                navigate("/");
+                await retryAuth();
             }
 
         } catch (error) {
